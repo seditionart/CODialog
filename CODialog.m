@@ -184,6 +184,7 @@ CODialogSynth(highlightedIndex)
   // Compute frames of components
   CGFloat layoutFrameInset = kCODialogFrameInset + kCODialogPadding;
   CGRect layoutFrame = CGRectInset(self.bounds, layoutFrameInset, layoutFrameInset);
+  layoutFrame.size.width = 276;
   CGFloat layoutWidth = CGRectGetWidth(layoutFrame);
   
   // Title frame
