@@ -428,14 +428,27 @@ CODialogSynth(highlightedIndex)
   [self layoutComponents];
   
   if (show) {
+      CGAffineTransform transform;
+      switch (NIInterfaceOrientation()) {
+          case UIInterfaceOrientationLandscapeLeft:
+              transform = CGAffineTransformRotate(CGAffineTransformIdentity, -M_PI_2);
+              break;
+          case UIInterfaceOrientationLandscapeRight:
+              transform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
+              break;
+          default:
+              transform = CGAffineTransformIdentity;
+              break;
+      }
+      
     // Scale down ourselves for pop animation
-    self.transform = CGAffineTransformMakeScale(kCODialogPopScale, kCODialogPopScale);
+    self.transform = CGAffineTransformConcat(transform, CGAffineTransformMakeScale(kCODialogPopScale, kCODialogPopScale));
     
     // Animate
     NSTimeInterval animationDuration = (flag ? kCODialogAnimationDuration : 0.0);
     [UIView animateWithDuration:animationDuration delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
       overlay.alpha = 1.0;
-      self.transform = CGAffineTransformIdentity;
+      self.transform = CGAffineTransformConcat(transform, CGAffineTransformIdentity);
     } completion:^(BOOL finished) {
       // stub
       if (self.dialogDidShowCallback) {
@@ -468,7 +481,19 @@ CODialogSynth(highlightedIndex)
   NSTimeInterval animationDuration = (flag ? kCODialogAnimationDuration : 0.0);
   [UIView animateWithDuration:animationDuration delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
     overlay.alpha = 0.0;
-    self.transform = CGAffineTransformMakeScale(kCODialogPopScale, kCODialogPopScale);
+    CGAffineTransform transform;
+    switch (NIInterfaceOrientation()) {
+        case UIInterfaceOrientationLandscapeLeft:
+            transform = CGAffineTransformRotate(CGAffineTransformIdentity, -M_PI_2);
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            transform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
+            break;
+        default:
+            transform = CGAffineTransformIdentity;
+            break;
+    }
+    self.transform = CGAffineTransformConcat(transform, CGAffineTransformMakeScale(kCODialogPopScale, kCODialogPopScale));
   } completion:^(BOOL finished) {
     overlay.hidden = YES;
     self.transform = CGAffineTransformIdentity;
